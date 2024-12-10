@@ -17,7 +17,7 @@ model Eleve {
   id         Int     @id @default(autoincrement())
   name       String
   lastname   String
-  datenaissance DateTime?
+  datenaissance DateTime
   redoublant Boolean
   classeId   Int
   classe     Classe  @relation(fields: [classeId], references: [id])
@@ -29,15 +29,16 @@ model Classe {
   classenom    String
   anneescolaire Int
   eleves       Eleve[]
-  professeurId Int   @unique
-  professeur   Professeur  @relation(fields: [professeurId], references: [id])
+  utilisateurid Int   @unique
+  professeur   Utilisateur  @relation(fields: [utilisateurid], references: [id])
 }
 
-model Professeur {
+model Utilisateur  {
   id        Int   @id @default(autoincrement())
   name      String
   lastname  String
-  login     String?  @unique
-  password  String?
+  login     String  @unique
+  password  String
+  role      String
   classe    Classe?
 }

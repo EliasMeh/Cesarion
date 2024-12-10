@@ -3,12 +3,12 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ profid: string }> }) {
-    const { profid } = await params;
-    const profIdInt = parseInt(profid, 10);
+export async function GET(request: NextRequest, { params }: { params: Promise<{ userid: string }> }) {
+    const { userid } = await params;
+    const userIdInt = parseInt(userid, 10);
 
-    const data = await prisma.professeur.findFirst({
-        where: { id: profIdInt }
+    const data = await prisma.utilisateur.findFirst({
+        where: { id: userIdInt }
     });
 
     return NextResponse.json(data);
