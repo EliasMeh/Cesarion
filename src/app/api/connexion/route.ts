@@ -20,12 +20,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid login or password' }, { status: 401 });
     }
 
+    console.log('Stored password hash:', user.password);
+    console.log('Provided password:', password);
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       return NextResponse.json({ error: 'Invalid login or password' }, { status: 401 });
     }
 
+    // If login is successful, you can return user data or a token
     return NextResponse.json({ message: 'Login successful', role: user.role });
   } catch (error) {
     console.error(error);

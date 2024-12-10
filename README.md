@@ -38,16 +38,17 @@ POST /api/eleves
     "classeId": 1
 }
 
-GET /api/professeurs
+GET /api/utilisateurs
 Récupère la liste des professeurs
 
-GET /api/professeurs/[profid]
+GET /api/utilisateurs/[userid]
 Récupère un professeurs spécifique
 
-POST /api/professeurs
+POST /api/utilisateurs
 {
     "name": "Jean-Marc",
     "lastname": "Lederff",
     "login": "jlderff",
-    "password": "azerty"
+    "password": "azerty",
+    "role": "Professeur"
 }
