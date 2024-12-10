@@ -1,5 +1,8 @@
 <h1>Cesarion aka l'application Backend de gestion des élèves de la commune de Saint-Exupéry</h1>
 
+<h1>Technologies<h1>
+Next.Js, Typescript, PostgreSQL, Prisma, Vercel.
+
 <h1>Installer les dépendance:</h1>
 npm install
 
