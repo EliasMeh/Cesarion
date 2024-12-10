@@ -19,7 +19,7 @@ export async function POST(request: Request) {
             data: {
                 name: body.name,
                 lastname: body.lastname,
-                datenaissance: datenaissance,
+                datenaissance: body.datenaissance,
                 redoublant: body.redoublant,
                 classeId: body.classeId
             }
