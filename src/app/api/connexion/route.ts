@@ -1,14 +1,14 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  const { login, password } = req.body;
+export async function POST(request: NextRequest) {
+  const { login, password } = await request.json();
 
   if (!login || !password) {
-    return res.status(400).json({ error: 'Missing login or password' });
+    return NextResponse.json({ error: 'Missing login or password' }, { status: 400 });
   }
 
   try {
@@ -17,18 +17,18 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     });
 
     if (!user) {
-      return res.status(401).json({ error: 'Invalid login or password' });
+      return NextResponse.json({ error: 'Invalid login or password' }, { status: 401 });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid login or password' });
+      return NextResponse.json({ error: 'Invalid login or password' }, { status: 401 });
     }
 
-    return res.status(200).json({ message: 'Login successful', role: user.role });
+    return NextResponse.json({ message: 'Login successful', role: user.role });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
