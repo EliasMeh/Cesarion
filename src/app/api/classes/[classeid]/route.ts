@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export async function GET(request: Request) {
     const url = new URL(request.url);
-    const classeid = url.pathname.split("/").pop();
+    const classeid = Number(url.pathname.split("/").pop());
 
     const data = await prisma.classe.findFirst({
         where: { id: classeid },

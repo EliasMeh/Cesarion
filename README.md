@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<h1>Installer les dépendance:</h1>
+npm install
 
-## Getting Started
-
-First, run the development server:
-
-```bash
+<h1>Lancer le serveur:</h1>
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<h1>Routes et exemples:</h1>
+GET /api/classes
+Récupère la liste des classes et de leurs élèves associés
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+GET /api/classes/[classeid]
+Récupère une classe spécifique et sa liste d'élève
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+POST /api/classes 
+{
+    "classerang": "CP",
+    "classenom": "B",
+    "professeurId": 1
+}
 
-## Learn More
+GET /api/eleves
+Récupère la liste des élèves
 
-To learn more about Next.js, take a look at the following resources:
+GET /api/eleves/[elevesid]
+Récupère un élève spécifique
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+POST /api/eleves
+{
+    "name": "Alice",
+    "lastname": "Johnson",
+    "datenaissance": "2010-05-15",
+    "redoublant": false,
+    "classeId": 1
+}
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+GET /api/professeurs
+Récupère la liste des professeurs
 
-## Deploy on Vercel
+GET /api/professeurs/[profid]
+Récupère un professeurs spécifique
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+POST /api/professeurs
+{
+    "name": "Jean-Marc",
+    "lastname": "Lederff",
+    "login": "jlderff",
+    "password": "azerty"
+}

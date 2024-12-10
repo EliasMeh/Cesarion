@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export async function GET(request: Request, context: { params: { profid: string } }) {
     const { params } = context;
-    const profid = params.profid;
+    const profid = parseInt(params.profid, 10);
 
     const data = await prisma.professeur.findFirst({
         where: { id: profid }

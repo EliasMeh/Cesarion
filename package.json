@@ -6,15 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "seed": "ts-node prisma/seeds/seed.mts"
+    "lint": "next lint"
   },
   "dependencies": {
-    "@prisma/client": "^6.0.1",
     "next": "15.0.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "ts-node": "^10.9.2"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
