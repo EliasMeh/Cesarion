@@ -42,3 +42,8 @@ model Utilisateur  {
   role      String
   classe    Classe?
 }
+
+model CurrentYear {
+  id             Int      @id @default(autoincrement())
+  year           Int      @unique
+}
