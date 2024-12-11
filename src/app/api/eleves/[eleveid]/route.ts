@@ -12,3 +12,26 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     return NextResponse.json(data);
 }
+
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ eleveid: string }> }) {
+    const eleveid = parseInt((await params).eleveid, 10);
+    const body = await request.json();
+
+    try {
+        const data = await prisma.eleve.update({
+            where: { id: eleveid },
+            data: {
+                name: body.name,
+                lastname: body.lastname,
+                datenaissance: body.datenaissance ? new Date(body.datenaissance) : undefined,
+                redoublant: body.redoublant,
+                classeId: body.classeId
+            }
+        });
+
+        return NextResponse.json(data);
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json({ error: 'Failed to update eleve' }, { status: 500 });
+    }
+}
