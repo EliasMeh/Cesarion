@@ -17,7 +17,7 @@ model Eleve {
   id         Int     @id @default(autoincrement())
   name       String
   lastname   String
-  datenaissance DateTime
+  datenaissance String
   redoublant Boolean
   classeId   Int
   classe     Classe  @relation(fields: [classeId], references: [id])
@@ -37,6 +37,7 @@ model Utilisateur  {
   id        Int   @id @default(autoincrement())
   name      String
   lastname  String
+  email    String  @unique
   login     String  @unique
   password  String @default("azerty")
   role      String

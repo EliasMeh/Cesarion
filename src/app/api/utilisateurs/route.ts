@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
         data: {
             name: body.name,
             lastname: body.lastname,
+            email: body.email,
             login: body.login,
             password: hashedPassword,
             role: body.role

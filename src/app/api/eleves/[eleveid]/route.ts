@@ -23,7 +23,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             data: {
                 name: body.name,
                 lastname: body.lastname,
-                datenaissance: body.datenaissance ? new Date(body.datenaissance) : undefined,
+                datenaissance: body.datenaissance,
                 redoublant: body.redoublant,
                 classeId: body.classeId
             }

@@ -1,53 +1,96 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Utilisateur, Classe } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+interface InputData {
+    "Niveau": string;
+    "Nom Élève": string;
+    "Prénom Élève": string;
+    "Date de Naissance": string; // Format: "DD-MM-YYYY"
+    "Nom Professeur": string;
+}
+
+interface GroupedData {
+    professeur: string;
+    niveau: string;
+    eleves: InputData[];
+}
+
 export async function POST(request: NextRequest) {
-    const body = await request.json();
+    const body: InputData[] = await request.json();
 
     try {
-        for (const item of body) {
-            // Find or create the professeur
-            const professeur = await prisma.utilisateur.upsert({
-                where: { login: item["Nom Professeur"] },
+        // Group items by "Nom Professeur"
+        const groupedData: Record<string, GroupedData> = body.reduce((acc: Record<string, GroupedData>, item: InputData) => {
+            const key = item["Nom Professeur"];
+            if (!acc[key]) {
+                acc[key] = {
+                    professeur: item["Nom Professeur"],
+                    niveau: item["Niveau"],
+                    eleves: []
+                };
+            }
+            acc[key].eleves.push(item);
+            return acc;
+        }, {});
+
+        for (const professeurName in groupedData) {
+            const group = groupedData[professeurName];
+            
+            // Create or update the professeur
+            const professeurLogin = professeurName.toLowerCase();
+            const professeur: Utilisateur = await prisma.utilisateur.upsert({
+                where: { login: professeurLogin },
                 update: {},
                 create: {
-                    name: item["Nom Professeur"],
-                    lastname: item["Nom Professeur"], // Assuming same as name
-                    login: item["Nom Professeur"], // Assuming login is the same as name
-                    password: "azerty", // You should replace this with a secure password generation logic
+                    name: professeurName,
+                    lastname: professeurName,
+                    email: `${professeurLogin}@example.com`,
+                    login: professeurLogin,
+                    password: "azerty",
                     role: "professeur"
                 }
             });
 
-            // Find or create the classe
-            const classe = await prisma.classe.upsert({
-                where: { id: item["ClasseId"] }, // Assuming item contains a unique identifier "ClasseId"
-                update: {},
+            // Create or update the classe
+            const classe: Classe = await prisma.classe.upsert({
+                where: { utilisateurid: professeur.id },
+                update: {
+                    classerang: group.niveau,
+                    anneescolaire: new Date().getFullYear()
+                },
                 create: {
-                    classerang: item["Niveau"],
-                    classenom: item["Niveau"],
-                    anneescolaire: new Date().getFullYear(), // Assuming current year
+                    classerang: group.niveau,
+                    classenom: "",
+                    anneescolaire: new Date().getFullYear(),
                     utilisateurid: professeur.id
                 }
             });
 
-            // Create the eleve
-            await prisma.eleve.create({
-                data: {
-                    name: item["Prénom Élève"],
-                    lastname: item["Nom Élève"],
-                    datenaissance: new Date(item["Date de Naissance"]),
-                    redoublant: false, // Assuming redoublant is false for all entries
-                    classeId: classe.id
-                }
-            });
+            // Create eleves
+            for (const eleveData of group.eleves) {
+                // Use the date directly as a string
+                const datenaissance = eleveData["Date de Naissance"]; // Already in "DD-MM-YYYY" format
+
+                await prisma.eleve.create({
+                    data: {
+                        name: eleveData["Prénom Élève"],
+                        lastname: eleveData["Nom Élève"],
+                        datenaissance , // Use the date as a string
+                        redoublant: false,
+                        classeId: classe.id
+                    }
+                });
+            }
         }
 
         return NextResponse.json({ message: "Data imported successfully" });
     } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: "Failed to import data" }, { status: 500 });
+        console.error("Error details:", error);
+        if (error instanceof Error) {
+            return NextResponse.json({ error: "Failed to import data", details: error.message }, { status: 500 });
+        }
+        return NextResponse.json({ error: "Failed to import data", details: "Unknown error" }, { status: 500 });
     }
 }
