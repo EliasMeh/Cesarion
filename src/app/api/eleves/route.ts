@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -8,25 +8,33 @@ export async function GET() {
     return NextResponse.json(data);
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const datenaissance = body.datenaissance ? new Date(body.datenaissance) : null;
-        if (datenaissance) {
-            datenaissance.setUTCHours(0, 0, 0, 0); // Set time to midnight
+
+        // Check if the body is an array
+        if (!Array.isArray(body)) {
+            return NextResponse.json({ error: 'Expected an array of students' }, { status: 400 });
         }
-        const data = await prisma.eleve.create({
-            data: {
-                name: body.name,
-                lastname: body.lastname,
-                datenaissance: body.datenaissance,
-                redoublant: body.redoublant,
-                classeId: body.classeId
-            }
-        });
-        return NextResponse.json(data);
+
+        const createdEleves = [];
+
+        for (const eleve of body) {
+            const data = await prisma.eleve.create({
+                data: {
+                    name: eleve.name,
+                    lastname: eleve.lastname,
+                    datenaissance: eleve.datenaissance,
+                    redoublant: eleve.redoublant,
+                    classeId: eleve.classeId
+                }
+            });
+            createdEleves.push(data);
+        }
+
+        return NextResponse.json(createdEleves);
     } catch (error) {
         console.error(error);
-        return NextResponse.json({ error: 'An error occurred while creating the student' }, { status: 500 });
+        return NextResponse.json({ error: 'An error occurred while creating the students' }, { status: 500 });
     }
 }

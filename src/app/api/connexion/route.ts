@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     }
 
     // If login is successful, you can return user data or a token
-    return NextResponse.json({ message: 'Login successful', role: user.role });
+    return NextResponse.json({ message: 'Login successful', role: user.role, id: user.id, name: user.name, lastname: user.lastname });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
