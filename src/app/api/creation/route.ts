@@ -89,6 +89,9 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error("Error details:", error);
         if (error instanceof Error) {
+            if (error.message.includes("503")) {
+                return NextResponse.json({ error: "File too big" }, { status: 503 });
+            }
             return NextResponse.json({ error: "Failed to import data", details: error.message }, { status: 500 });
         }
         return NextResponse.json({ error: "Failed to import data", details: "Unknown error" }, { status: 500 });

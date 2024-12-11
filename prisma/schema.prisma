@@ -14,13 +14,15 @@ datasource db {
 }
 
 model Eleve {
-  id         Int     @id @default(autoincrement())
-  name       String
-  lastname   String
-  datenaissance String
-  redoublant Boolean
-  classeId   Int
-  classe     Classe  @relation(fields: [classeId], references: [id])
+  id             Int     @id @default(autoincrement())
+  name           String
+  lastname       String
+  datenaissance  String  // Format: "DD-MM-YYYY"
+  redoublant     Boolean
+  classeId       Int
+  classe         Classe  @relation(fields: [classeId], references: [id])
+
+  @@unique([name, lastname]) // Unique constraint on name and lastname combination
 }
 
 model Classe {
