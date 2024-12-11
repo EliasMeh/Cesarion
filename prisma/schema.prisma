@@ -26,7 +26,7 @@ model Eleve {
 model Classe {
   id           Int      @id @default(autoincrement())
   classerang   String   // CP-CE1-CE2-CM1-CM2
-  classenom    String
+  classenom    String?
   anneescolaire Int
   eleves       Eleve[]
   utilisateurid Int   @unique
@@ -38,7 +38,7 @@ model Utilisateur  {
   name      String
   lastname  String
   login     String  @unique
-  password  String
+  password  String @default("azerty")
   role      String
   classe    Classe?
 }
