@@ -38,14 +38,17 @@ export async function POST(request: NextRequest) {
         for (const professeurName in groupedData) {
             const group = groupedData[professeurName];
             
+            // Split the professeurName into name and lastname
+            const [name, lastname] = professeurName.split(' ');
+
             // Create or update the professeur
-            const professeurLogin = professeurName.toLowerCase();
+            const professeurLogin = professeurName.toLowerCase().replace(' ', '');
             const professeur: Utilisateur = await prisma.utilisateur.upsert({
                 where: { login: professeurLogin },
                 update: {},
                 create: {
-                    name: professeurName,
-                    lastname: professeurName,
+                    name: name,
+                    lastname: lastname,
                     email: `${professeurLogin}@example.com`,
                     login: professeurLogin,
                     password: "azerty",
@@ -56,28 +59,21 @@ export async function POST(request: NextRequest) {
             // Create or update the classe
             const classe: Classe = await prisma.classe.upsert({
                 where: { utilisateurid: professeur.id },
-                update: {
-                    classerang: group.niveau,
-                    anneescolaire: new Date().getFullYear()
-                },
+                update: {},
                 create: {
                     classerang: group.niveau,
-                    classenom: "",
-                    anneescolaire: new Date().getFullYear(),
+                    classenom: group.niveau,
+                    anneescolaire: new Date().getFullYear(), // Assuming current year
                     utilisateurid: professeur.id
                 }
             });
 
-            // Create eleves
             for (const eleveData of group.eleves) {
-                // Use the date directly as a string
-                const datenaissance = eleveData["Date de Naissance"]; // Already in "DD-MM-YYYY" format
-
                 await prisma.eleve.create({
                     data: {
                         name: eleveData["Prénom Élève"],
                         lastname: eleveData["Nom Élève"],
-                        datenaissance , // Use the date as a string
+                        datenaissance: eleveData["Date de Naissance"], // Use the date as a string
                         redoublant: false,
                         classeId: classe.id
                     }
