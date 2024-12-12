@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient, Utilisateur, Classe } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
@@ -40,6 +41,7 @@ export async function POST(request: NextRequest) {
             const [name, lastname] = professeurName.split(' ');
 
             const professeurLogin = professeurName.toLowerCase().replace(' ', '');
+            const hashedPassword = await bcrypt.hash("azerty", 10); // Hash the password
             const professeur: Utilisateur = await prisma.utilisateur.upsert({
                 where: { login: professeurLogin },
                 update: {},
@@ -48,7 +50,7 @@ export async function POST(request: NextRequest) {
                     lastname: lastname,
                     email: `${professeurLogin}@example.com`,
                     login: professeurLogin,
-                    password: "azerty",
+                    password: hashedPassword,
                     role: "professeur"
                 }
             });
