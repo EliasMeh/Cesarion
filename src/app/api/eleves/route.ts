@@ -12,7 +12,6 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
 
-        // Check if the body is an array
         if (!Array.isArray(body)) {
             return NextResponse.json({ error: 'Expected an array of students' }, { status: 400 });
         }

@@ -12,7 +12,6 @@ export async function GET() {
 export async function POST(request: NextRequest) {
     const body = await request.json();
 
-    // Hash the password before storing it in the database
     const hashedPassword = await bcrypt.hash(body.password, 10);
 
     const data = await prisma.utilisateur.create({

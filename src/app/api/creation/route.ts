@@ -7,7 +7,7 @@ interface InputData {
     "Niveau": string;
     "Nom Élève": string;
     "Prénom Élève": string;
-    "Date de Naissance": string; // Format: "DD-MM-YYYY"
+    "Date de Naissance": string; 
     "Nom Professeur": string;
 }
 
@@ -21,7 +21,6 @@ export async function POST(request: NextRequest) {
     const body: InputData[] = await request.json();
 
     try {
-        // Group items by "Nom Professeur"
         const groupedData: Record<string, GroupedData> = body.reduce((acc: Record<string, GroupedData>, item: InputData) => {
             const key = item["Nom Professeur"];
             if (!acc[key]) {
@@ -38,10 +37,8 @@ export async function POST(request: NextRequest) {
         for (const professeurName in groupedData) {
             const group = groupedData[professeurName];
             
-            // Split the professeurName into name and lastname
             const [name, lastname] = professeurName.split(' ');
 
-            // Create or update the professeur
             const professeurLogin = professeurName.toLowerCase().replace(' ', '');
             const professeur: Utilisateur = await prisma.utilisateur.upsert({
                 where: { login: professeurLogin },
@@ -56,14 +53,13 @@ export async function POST(request: NextRequest) {
                 }
             });
 
-            // Create or update the classe
             const classe: Classe = await prisma.classe.upsert({
                 where: { utilisateurid: professeur.id },
                 update: {},
                 create: {
                     classerang: group.niveau,
                     classenom: group.niveau,
-                    anneescolaire: new Date().getFullYear(), // Assuming current year
+                    anneescolaire: new Date().getFullYear(),
                     utilisateurid: professeur.id
                 }
             });
@@ -73,7 +69,7 @@ export async function POST(request: NextRequest) {
                     data: {
                         name: eleveData["Prénom Élève"],
                         lastname: eleveData["Nom Élève"],
-                        datenaissance: eleveData["Date de Naissance"], // Use the date as a string
+                        datenaissance: eleveData["Date de Naissance"],
                         redoublant: false,
                         classeId: classe.id
                     }
