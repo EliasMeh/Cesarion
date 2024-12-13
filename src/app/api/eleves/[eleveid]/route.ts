@@ -35,3 +35,18 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         return NextResponse.json({ error: 'Failed to update eleve' }, { status: 500 });
     }
 }
+
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ eleveid: string }> }) {
+    const eleveid = parseInt((await params).eleveid, 10);
+
+    try {
+        await prisma.eleve.delete({
+            where: { id: eleveid }
+        });
+
+        return NextResponse.json({ message: 'Eleve deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json({ error: 'Failed to delete eleve' }, { status: 500 });
+    }
+}
